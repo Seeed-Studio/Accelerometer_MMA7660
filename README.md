@@ -25,4 +25,4 @@ global distributors and partners to push open hardware movement.<br>
 
 
 
-
+[![Analytics](https://ga-beacon.appspot.com/UA-46589105-3/Grove_3Axis_Digital_Accelerometer_MMA7660)](https://github.com/igrigorik/ga-beacon)
