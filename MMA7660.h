@@ -3,7 +3,7 @@
  * Library for accelerometer_MMA7760
  *
  * Copyright (c) 2013 seeed technology inc.
- * Author        :   FrankieChu 
+ * Author        :   FrankieChu
  * Create Time   :   Jan 2013
  * Change Log    :
  *
@@ -27,7 +27,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
- 
+
 #ifndef __MMC7660_H__
 #define __MMC7660_H__
 
@@ -42,7 +42,7 @@
 #define MMA7660_INTSU 0x06
 #define MMA7660_MODE  0x07
     #define MMA7660_STAND_BY 0x00
-    #define MMA7660_ACTIVE   0x01   
+    #define MMA7660_ACTIVE   0x01
 #define MMA7660_SR    0x08      //sample rate register
     #define AUTO_SLEEP_120  0X00//120 sample per second
     #define AUTO_SLEEP_64   0X01
@@ -57,16 +57,15 @@
 class MMA7660
 {
 private:
-    void write(uint8_t _register, uint8_t _data);
-    uint8_t read(uint8_t _register);
 public:
     void init();
+    void write(uint8_t _register, uint8_t _data);
+    uint8_t read(uint8_t _register);
     void setMode(uint8_t mode);
     void setSampleRate(uint8_t rate);
     void getXYZ(int8_t *x,int8_t *y,int8_t *z);
+    void getData();
     void getAcceleration(float *ax,float *ay,float *az);
 };
 
 #endif
-
-
