@@ -63,7 +63,7 @@
 #define MMA7660_PDET  0x09
 #define MMA7660_PD    0x0A
 
-struct MMA7760_DATA {
+struct MMA7660_DATA {
   uint8_t X;
   uint8_t Y;
   uint8_t Z;
@@ -77,18 +77,33 @@ struct MMA7760_DATA {
   uint8_t PD;
 };
 
+struct MMA7660_LOOKUP {
+  float g;
+  float xyAngle;
+  float zAngle;
+};
+
+struct MMA7660_ACC_DATA {
+  MMA7660_LOOKUP x;
+  MMA7660_LOOKUP y;
+  MMA7660_LOOKUP z;
+};
+
 class MMA7660 {
 private:
   void write(uint8_t _register, uint8_t _data);
   uint8_t read(uint8_t _register);
+  void initAccelTable();
+
+  MMA7660_LOOKUP accLookup[64];
+  
 public:
   void init();
   void init(uint8_t interrupts);
   void setMode(uint8_t mode);
   void setSampleRate(uint8_t rate);
-  void getXYZ(int8_t *x, int8_t *y, int8_t *z);
-  void getAllData(MMA7760_DATA *data);
-  void getAcceleration(float *ax,float *ay,float *az);
+  void getXYZ(MMA7660_ACC_DATA *data);
+  void getAllData(MMA7660_DATA *data);
 };
 
 #endif

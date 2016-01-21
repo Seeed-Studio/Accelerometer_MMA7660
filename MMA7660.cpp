@@ -57,8 +57,46 @@ uint8_t MMA7660::read(uint8_t _register) {
   return data_read;
 }
 
+// populate lookup table based on the MMA7660 datasheet at http://www.farnell.com/datasheets/1670762.pdf
+void MMA7660::initAccelTable() {
+  int i;
+  float val, valZ;
+
+  for (i = 0, val = 0; i < 32; i++) {
+    accLookup[i].g = val;
+    val += 0.047;
+  }
+
+  for (i = 63, val = -0.047; i > 31; i--) {
+    accLookup[i].g = val;
+    val -= 0.047;
+  }
+
+  for (i = 0, val = 0, valZ = 90; i < 22; i++) {
+    accLookup[i].xyAngle = val;
+    accLookup[i].zAngle = valZ;
+
+    val += 2.69;
+    valZ -= 2.69;
+  }
+
+  for (i = 63, val = -2.69, valZ = -87.31; i > 42; i--) {
+    accLookup[i].xyAngle = val;
+    accLookup[i].zAngle = valZ;
+
+    val -= 2.69;
+    valZ += 2.69;
+  }
+
+  for (i = 22; i < 43; i++) {
+    accLookup[i].xyAngle = 255;
+    accLookup[i].zAngle = 255;
+  }
+}
+
 void MMA7660::init()
 {
+  initAccelTable();
   setMode(MMA7660_STAND_BY);
   setSampleRate(AUTO_SLEEP_32);
   setMode(MMA7660_ACTIVE);
@@ -66,6 +104,7 @@ void MMA7660::init()
 
 void MMA7660::init(uint8_t interrupts)
 {
+  initAccelTable();
   setMode(MMA7660_STAND_BY);
   setSampleRate(AUTO_SLEEP_32);
   write(MMA7660_INTSU, interrupts);
@@ -79,29 +118,38 @@ void MMA7660::setSampleRate(uint8_t rate) {
 }
 /*Function: Get the contents of the registers in the MMA7660*/
 /*          so as to calculate the acceleration.            */
-void MMA7660::getXYZ(int8_t *x, int8_t *y, int8_t *z) {
+void MMA7660::getXYZ(MMA7660_ACC_DATA *data) {
   unsigned char val[3];
-  int count = 0;
+  int count;
+  bool error;
 
-  while(Wire.available() > 0) {
-    Wire.read();
-  }
+  do {
+    error = false;
+    count = 0;
 
-  Wire.requestFrom(MMA7660_ADDR, 3);
-  while(Wire.available()) {
-    if (count < 3) {
-      while (val[count] > 0x3F) {  // reload the damn thing it is bad
-        val[count] = Wire.read();
-      }
+    while(Wire.available() > 0) {
+      Wire.read();
     }
-    count++;
-  }
-  *x = (((char)(val[0] << 2)) / -4) - 30;
-  *y = (((char)(val[1] << 2)) / -4) - 30;
-  *z = (((char)(val[2] << 2)) / -4) - 30;
+
+    Wire.requestFrom(MMA7660_ADDR, 3);
+    while(Wire.available()) {
+      if (count < 3) {
+        val[count] = Wire.read();
+        if (0x40 & val[count] == 0x40) { // alert bit is set, data is garbage and we have to start over.
+          error = true;
+          break;
+        }
+      }
+      count++;
+    }
+  } while (error);
+
+  (*data).x = accLookup[val[0]];
+  (*data).y = accLookup[val[1]];
+  (*data).z = accLookup[val[2]];
 }
 
-void MMA7660::getAllData(MMA7760_DATA *data) {
+void MMA7660::getAllData(MMA7660_DATA *data) {
   int count = 0;
   uint8_t val[11] = {0};
 
