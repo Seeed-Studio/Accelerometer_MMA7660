@@ -116,9 +116,43 @@ void MMA7660::setMode(uint8_t mode) {
 void MMA7660::setSampleRate(uint8_t rate) {
   write(MMA7660_SR,rate);
 }
+
 /*Function: Get the contents of the registers in the MMA7660*/
 /*          so as to calculate the acceleration.            */
-void MMA7660::getXYZ(MMA7660_ACC_DATA *data) {
+void MMA7660::getXYZ(int8_t *x,int8_t *y,int8_t *z)
+{
+    unsigned char val[3];
+    int count = 0;
+    val[0] = val[1] = val[2] = 64;
+    while(Wire.available() > 0)
+        Wire.read();
+    Wire.requestFrom(MMA7660_ADDR,3);
+    while(Wire.available())
+    {
+        if(count < 3)
+        {
+            while ( val[count] > 63 )  // reload the damn thing it is bad
+            {
+              val[count] = Wire.read();
+            }
+        }
+        count++;
+    }
+    *x = ((char)(val[0]<<2))/4;
+    *y = ((char)(val[1]<<2))/4;
+    *z = ((char)(val[2]<<2))/4;
+}
+
+void MMA7660::getAcceleration(float *ax,float *ay,float *az)
+{
+    int8_t x,y,z;
+    getXYZ(&x,&y,&z);
+    *ax = x/21.00;
+    *ay = y/21.00;
+    *az = z/21.00;
+}
+
+void MMA7660::getAcceleration(MMA7660_ACC_DATA *data) {
   unsigned char val[3];
   int count;
   bool error;

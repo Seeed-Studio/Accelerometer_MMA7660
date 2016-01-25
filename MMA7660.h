@@ -96,13 +96,23 @@ private:
   void initAccelTable();
 
   MMA7660_LOOKUP accLookup[64];
-  
+
 public:
   void init();
   void init(uint8_t interrupts);
   void setMode(uint8_t mode);
   void setSampleRate(uint8_t rate);
-  void getXYZ(MMA7660_ACC_DATA *data);
+
+  // get the signed value of x,y,z register
+  void getXYZ(int8_t *x,int8_t *y,int8_t *z);
+
+  // calculate the acceleration from the signed value of x,y,z register
+  void getAcceleration(float *ax,float *ay,float *az);
+
+  // lookup the acceleration from the lookup table from this chip's datasheet
+  void getAcceleration(MMA7660_ACC_DATA *data);
+
+  // get all the register value
   void getAllData(MMA7660_DATA *data);
 };
 
