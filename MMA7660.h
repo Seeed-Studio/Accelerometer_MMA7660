@@ -104,16 +104,16 @@ public:
   void setSampleRate(uint8_t rate);
 
   // get the signed value of x,y,z register
-  void getXYZ(int8_t *x,int8_t *y,int8_t *z);
+  bool getXYZ(int8_t *x,int8_t *y,int8_t *z);
 
   // calculate the acceleration from the signed value of x,y,z register
-  void getAcceleration(float *ax,float *ay,float *az);
+  bool getAcceleration(float *ax,float *ay,float *az);
 
   // lookup the acceleration from the lookup table from this chip's datasheet
-  void getAcceleration(MMA7660_ACC_DATA *data);
+  bool getAcceleration(MMA7660_ACC_DATA *data);
 
   // get all the register value
-  void getAllData(MMA7660_DATA *data);
+  bool getAllData(MMA7660_DATA *data);
 };
 
 #endif
