@@ -146,23 +146,11 @@ START:
 
                 if(micros()-timer_s > MMA7660TIMEOUT)
                 {
-                    Serial.println("1---------------TIMEOUT----------------");
-                    //Serial.print("count = ");Serial.println(count);
-                    //Serial.print("val[count] = ");Serial.println(val[count]);
                     goto START;
-                    return 0;
                 }
             }
         }
         count++;
-
-        if(micros()-timer_s > MMA7660TIMEOUT)
-        {
-            Serial.println("2---------------TIMEOUT----------------");
-            Serial.print("count = ");Serial.println(count);
-            Serial.print("val[count] = ");Serial.println(val[count]);
-            return 0;
-        }
     }
 
     *x = ((char)(val[0]<<2))/4;
