@@ -153,9 +153,9 @@ START:
         count++;
     }
 
-    *x = ((char)(val[0]<<2))/4;
-    *y = ((char)(val[1]<<2))/4;
-    *z = ((char)(val[2]<<2))/4;
+    *x = ((int8_t)(val[0]<<2))/4;
+    *y = ((int8_t)(val[1]<<2))/4;
+    *z = ((int8_t)(val[2]<<2))/4;
     
     return 1;
 }
