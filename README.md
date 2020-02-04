@@ -1,4 +1,4 @@
-## Accelerometer_MMA7660
+## Accelerometer_MMA7660  [![Build Status](https://travis-ci.com/Seeed-Studio/Accelerometer_MMA7660.svg?branch=master)](https://travis-ci.com/Seeed-Studio/Accelerometer_MMA7660)
 ![image](https://statics3.seeedstudio.com/images/101020039%201.jpg)
 
 [Grove - 3-Axis Digital Accelerometer(±1.5g)](https://www.seeedstudio.com/Grove-3Axis-Digital-Accelerometer15g-p-765.html)
