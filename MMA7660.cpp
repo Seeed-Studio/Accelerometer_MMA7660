@@ -58,52 +58,13 @@ uint8_t MMA7660::read(uint8_t _register) {
     return data_read;
 }
 
-// populate lookup table based on the MMA7660 datasheet at http://www.farnell.com/datasheets/1670762.pdf
-void MMA7660::initAccelTable() {
-    int i;
-    float val, valZ;
-
-    for (i = 0, val = 0; i < 32; i++) {
-        accLookup[i].g = val;
-        val += 0.047;
-    }
-
-    for (i = 63, val = -0.047; i > 31; i--) {
-        accLookup[i].g = val;
-        val -= 0.047;
-    }
-
-    for (i = 0, val = 0, valZ = 90; i < 22; i++) {
-        accLookup[i].xyAngle = val;
-        accLookup[i].zAngle = valZ;
-
-        val += 2.69;
-        valZ -= 2.69;
-    }
-
-    for (i = 63, val = -2.69, valZ = -87.31; i > 42; i--) {
-        accLookup[i].xyAngle = val;
-        accLookup[i].zAngle = valZ;
-
-        val -= 2.69;
-        valZ += 2.69;
-    }
-
-    for (i = 22; i < 43; i++) {
-        accLookup[i].xyAngle = 255;
-        accLookup[i].zAngle = 255;
-    }
-}
-
 void MMA7660::init() {
-    initAccelTable();
     setMode(MMA7660_STAND_BY);
     setSampleRate(AUTO_SLEEP_32);
     setMode(MMA7660_ACTIVE);
 }
 
 void MMA7660::init(uint8_t interrupts) {
-    initAccelTable();
     setMode(MMA7660_STAND_BY);
     setSampleRate(AUTO_SLEEP_32);
     write(MMA7660_INTSU, interrupts);
